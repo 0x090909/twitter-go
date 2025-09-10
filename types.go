@@ -450,7 +450,7 @@ type (
 		Result TweetResult `json:"result"`
 	}
 
-	TweetResult struct {
+	/*TweetResult struct {
 		Typename                    string                      `json:"__typename"`
 		RestID                      string                      `json:"rest_id"`
 		Core                        TweetCore                   `json:"core"`
@@ -465,7 +465,7 @@ type (
 		AuthorCommunityRelationship AuthorCommunityRelationship `json:"author_community_relationship"`
 		QuotedStatusResult          *QuotedStatusResult         `json:"quoted_status_result,omitempty"`
 		Legacy                      TweetLegacy                 `json:"legacy"`
-	}
+	}*/
 
 	TweetCore struct {
 		UserResults UserResults `json:"user_results"`

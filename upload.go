@@ -104,7 +104,7 @@ func (s *Scraper) uploadInit(filePath string, fileContent []byte) (*Media, error
 		return nil, fmt.Errorf("file type %s unsupported by twitter, make sure you uploading photo, video or gif", fileType)
 	}
 
-	req, err := s.newRequest("POST", "https://upload.twitter.com/i/media/upload.json")
+	req, err := s.newRequest("POST", "https://upload.x.com/i/media/upload.json")
 	if err != nil {
 		return nil, err
 	}
@@ -118,8 +118,8 @@ func (s *Scraper) uploadInit(filePath string, fileContent []byte) (*Media, error
 		query.Set("video_duration_ms", strconv.FormatFloat(videoDuration*1000, 'f', -1, 64))
 	}
 	req.URL.RawQuery = query.Encode()
-	req.Header.Set("Origin", "https://twitter.com")
-	req.Header.Set("Referer", "https://twitter.com/")
+	req.Header.Set("Origin", "https://x.com")
+	req.Header.Set("Referer", "https://x.com/")
 
 	var uploadInit uploadInitResponse
 
@@ -158,7 +158,7 @@ func (s *Scraper) uploadAppend(media *Media, fileContent []byte) error {
 		}
 		w.Close()
 
-		req, err := s.newRequest("POST", "https://upload.twitter.com/i/media/upload.json")
+		req, err := s.newRequest("POST", "https://upload.x.com/i/media/upload.json")
 		if err != nil {
 			return err
 		}
@@ -169,8 +169,8 @@ func (s *Scraper) uploadAppend(media *Media, fileContent []byte) error {
 		query.Set("segment_index", strconv.Itoa(i))
 		req.URL.RawQuery = query.Encode()
 		req.Header.Set("Content-Type", w.FormDataContentType())
-		req.Header.Set("Origin", "https://twitter.com")
-		req.Header.Set("Referer", "https://twitter.com/")
+		req.Header.Set("Origin", "https://x.com")
+		req.Header.Set("Referer", "https://x.com/")
 		req.Body = io.NopCloser(&buf)
 
 		err = s.RequestAPI(req, nil)
@@ -183,7 +183,7 @@ func (s *Scraper) uploadAppend(media *Media, fileContent []byte) error {
 }
 
 func (s *Scraper) uploadFinalize(media *Media) (*ProcessingInfo, error) {
-	req, err := s.newRequest("POST", "https://upload.twitter.com/i/media/upload.json")
+	req, err := s.newRequest("POST", "https://upload.x.com/i/media/upload.json")
 	if err != nil {
 		return nil, err
 	}
@@ -193,8 +193,8 @@ func (s *Scraper) uploadFinalize(media *Media) (*ProcessingInfo, error) {
 	query.Set("media_id", strconv.Itoa(media.ID))
 	query.Set("allow_async", "true")
 	req.URL.RawQuery = query.Encode()
-	req.Header.Set("Origin", "https://twitter.com")
-	req.Header.Set("Referer", "https://twitter.com/")
+	req.Header.Set("Origin", "https://x.com")
+	req.Header.Set("Referer", "https://x.com/")
 
 	var response uploadStatusResponse
 
@@ -207,7 +207,7 @@ func (s *Scraper) uploadFinalize(media *Media) (*ProcessingInfo, error) {
 }
 
 func (s *Scraper) uploadStatus(media *Media) (*ProcessingInfo, error) {
-	req, err := s.newRequest("GET", "https://upload.twitter.com/i/media/upload.json")
+	req, err := s.newRequest("GET", "https://upload.x.com/i/media/upload.json")
 	if err != nil {
 		return nil, err
 	}
@@ -216,8 +216,8 @@ func (s *Scraper) uploadStatus(media *Media) (*ProcessingInfo, error) {
 	query.Set("command", "STATUS")
 	query.Set("media_id", strconv.Itoa(media.ID))
 	req.URL.RawQuery = query.Encode()
-	req.Header.Set("Origin", "https://twitter.com")
-	req.Header.Set("Referer", "https://twitter.com/")
+	req.Header.Set("Origin", "https://x.com")
+	req.Header.Set("Referer", "https://x.com/")
 
 	var response uploadStatusResponse
 

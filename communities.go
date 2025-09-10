@@ -1,14 +1,13 @@
 package twitterscraper
 
 import (
-	"encoding/json"
 	"net/http"
 	"net/url"
 )
 
 // GetCommunity retrieves community information by ID
 func (s *Scraper) GetCommunity(id string) (*Community, error) {
-	req, _ := s.newRequestExtended("GET", "https://x.com/i/api/graphql/2W09l7nD7ZbxGQHXvfB22w/CommunityQuery")
+	req, _ := s.newRequest("GET", "https://x.com/i/api/graphql/2W09l7nD7ZbxGQHXvfB22w/CommunityQuery")
 
 	variables := map[string]interface{}{
 		"communityId": id,
@@ -141,13 +140,4 @@ func (s *Scraper) newRequestExtended(method string, url string) (*http.Request, 
 	req.URL.RawQuery = q.Encode()
 
 	return req, nil
-}
-
-// mapToJSONString converts a map to a JSON string
-func mapToJSONString(data map[string]interface{}) string {
-	jsonBytes, err := json.Marshal(data)
-	if err != nil {
-		return ""
-	}
-	return string(jsonBytes)
 }

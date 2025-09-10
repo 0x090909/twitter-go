@@ -73,7 +73,6 @@ func newTestScraper(skip_auth bool) *twitterscraper.Scraper {
 	if err := s.GetGuestToken(); err != nil {
 		panic(fmt.Sprintf("cannot get guest token, can also be error with connection to twitter.\n %v", err))
 	}
-
 	if skip_auth == true || !skipAuthTest {
 		s.ClearGuestToken()
 		return s

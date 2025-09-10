@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const bearerToken string = "AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw"
+const bearerToken string = "AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA"
 
 // RequestAPI get JSON from frontend API and decodes it
 func (s *Scraper) RequestAPI(req *http.Request, target interface{}) error {
@@ -59,6 +59,7 @@ func (s *Scraper) setGuestToken(req *http.Request) error {
 			return err
 		}
 	}
+	fmt.Println("X-Guest-Token", s.guestToken)
 	req.Header.Set("X-Guest-Token", s.guestToken)
 	return nil
 }
@@ -100,10 +101,13 @@ func (s *Scraper) handleResponse(resp *http.Response, target interface{}) error 
 
 	return json.Unmarshal(content, target)
 }
+func (s *Scraper) Guest() string {
+	return s.guestToken
+}
 
 // GetGuestToken from Twitter API
 func (s *Scraper) GetGuestToken() error {
-	req, err := http.NewRequest("GET", "https://x.com/", nil)
+	req, err := http.NewRequest("POST", "https://api.twitter.com/1.1/guest/activate.json", nil)
 	if err != nil {
 		return err
 	}
@@ -115,22 +119,25 @@ func (s *Scraper) GetGuestToken() error {
 	}
 	defer resp.Body.Close()
 
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
 	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("response status %s: %s", resp.Status, body)
 	}
 
-	// Extract guest token from Set-Cookie header
-	for _, cookie := range resp.Cookies() {
-		fmt.Println(cookie)
-		if cookie.Name == "guest_id" || cookie.Name == "gt" {
-			s.guestToken = cookie.Value
-			s.guestCreatedAt = time.Now()
-			return nil
-		}
+	var jsn map[string]interface{}
+	if err := json.Unmarshal(body, &jsn); err != nil {
+		return err
 	}
+	var ok bool
+	if s.guestToken, ok = jsn["guest_token"].(string); !ok {
+		return fmt.Errorf("guest_token not found")
+	}
+	s.guestCreatedAt = time.Now()
 
-	return fmt.Errorf("guest_token not found in cookies")
+	return nil
 }
 
 func (s *Scraper) ClearGuestToken() error {

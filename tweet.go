@@ -47,7 +47,7 @@ func (newTweet *newTweet) parse() *Tweet {
 }
 
 func (s *Scraper) CreateTweet(tweet NewTweet) (*Tweet, error) {
-	req, err := s.newRequest("POST", "https://twitter.com/i/api/graphql/oB-5XsHNAbjvARJEc8CZFw/CreateTweet")
+	req, err := s.newRequest("POST", "https://x.com/i/api/graphql/oB-5XsHNAbjvARJEc8CZFw/CreateTweet")
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func (s *Scraper) CreateTweet(tweet NewTweet) (*Tweet, error) {
 }
 
 func (s *Scraper) DeleteTweet(tweetId string) error {
-	req, err := s.newRequest("POST", "https://twitter.com/i/api/graphql/VaenaVgh5q5ih7kvyVjgtg/DeleteTweet")
+	req, err := s.newRequest("POST", "https://x.com/i/api/graphql/VaenaVgh5q5ih7kvyVjgtg/DeleteTweet")
 	if err != nil {
 		return err
 	}
@@ -163,7 +163,7 @@ func (s *Scraper) DeleteTweet(tweetId string) error {
 }
 
 func (s *Scraper) CreateRetweet(tweetId string) (string, error) {
-	req, err := s.newRequest("POST", "https://twitter.com/i/api/graphql/ojPdsZsimiJrUGLR1sjUtA/CreateRetweet")
+	req, err := s.newRequest("POST", "https://x.com/i/api/graphql/ojPdsZsimiJrUGLR1sjUtA/CreateRetweet")
 	if err != nil {
 		return "", err
 	}
@@ -211,7 +211,7 @@ func (s *Scraper) CreateRetweet(tweetId string) (string, error) {
 
 // Retweeted tweets has their own id, but to delete retweet twitter using id of source tweet
 func (s *Scraper) DeleteRetweet(tweetId string) error {
-	req, err := s.newRequest("POST", "https://twitter.com/i/api/graphql/iQtK4dl5hBmXewYZuEOKVw/DeleteRetweet")
+	req, err := s.newRequest("POST", "https://x.com/i/api/graphql/iQtK4dl5hBmXewYZuEOKVw/DeleteRetweet")
 	if err != nil {
 		return err
 	}
@@ -253,7 +253,7 @@ func (s *Scraper) DeleteRetweet(tweetId string) error {
 }
 
 func (s *Scraper) LikeTweet(tweetId string) error {
-	req, err := s.newRequest("POST", "https://twitter.com/i/api/graphql/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet")
+	req, err := s.newRequest("POST", "https://x.com/i/api/graphql/lI07N6Otwv1PhnEgXILM7A/FavoriteTweet")
 	if err != nil {
 		return err
 	}
@@ -297,7 +297,7 @@ func (s *Scraper) LikeTweet(tweetId string) error {
 }
 
 func (s *Scraper) UnlikeTweet(tweetId string) error {
-	req, err := s.newRequest("POST", "https://twitter.com/i/api/graphql/ZYKSe-w7KEslx3JhSIk5LA/UnfavoriteTweet")
+	req, err := s.newRequest("POST", "https://x.com/i/api/graphql/ZYKSe-w7KEslx3JhSIk5LA/UnfavoriteTweet")
 	if err != nil {
 		return err
 	}
@@ -344,7 +344,7 @@ func (s *Scraper) GetTweetRetweeters(tweetId string, maxUsersNbr int, cursor str
 		maxUsersNbr = 200
 	}
 
-	req, err := s.newRequest("GET", "https://twitter.com/i/api/graphql/8019obfgnveiPiJuS2Rtow/Retweeters")
+	req, err := s.newRequest("GET", "https://x.com/i/api/graphql/8019obfgnveiPiJuS2Rtow/Retweeters")
 	if err != nil {
 		return nil, "", err
 	}
