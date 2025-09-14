@@ -85,7 +85,6 @@ func (s *Scraper) handleResponse(resp *http.Response, target interface{}) error 
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(content))
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("response status %s: %s", resp.Status, content)
 	}
