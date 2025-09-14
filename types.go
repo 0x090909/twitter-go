@@ -73,7 +73,7 @@ type (
 		UserID            string
 		Username          string
 		Videos            []Video
-		Views             int
+		Views             Views
 		SensitiveContent  bool
 	}
 
