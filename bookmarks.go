@@ -6,7 +6,7 @@ import (
 )
 
 // GetBookmarks returns channel with tweets from user bookmarks.
-func (s *Scraper) GetBookmarks(ctx context.Context, maxTweetsNbr int) <-chan *TweetResult {
+func (s *Scraper) GetBookmarks(ctx context.Context, maxTweetsNbr int) <-chan *TweetResultTimeline {
 	return getTweetTimeline(ctx, "", maxTweetsNbr, func(unused string, maxTweetsNbr int, cursor string) ([]*Tweet, string, error) {
 		return s.FetchBookmarks(maxTweetsNbr, cursor)
 	})

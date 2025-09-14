@@ -65,7 +65,7 @@ func (s *Scraper) GetCommunityTimeline(communityId string) (*CommunityTimelineRe
 		"articles_preview_enabled":                                                true,
 		"responsive_web_edit_tweet_api_enabled":                                   true,
 		"graphql_is_translatable_rweb_tweet_is_translatable_enabled":              true,
-		"view_counts_everywhere_api_enabled":                                      true,
+		"view_counts_everywhere_api_enabled":                                      false,
 		"longform_notetweets_consumption_enabled":                                 true,
 		"responsive_web_twitter_article_tweet_consumption_enabled":                true,
 		"tweet_awards_web_tipping_enabled":                                        false,

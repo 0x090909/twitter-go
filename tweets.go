@@ -8,12 +8,12 @@ import (
 )
 
 // GetTweets returns channel with tweets for a given user.
-func (s *Scraper) GetTweets(ctx context.Context, user string, maxTweetsNbr int) <-chan *TweetResult {
+func (s *Scraper) GetTweets(ctx context.Context, user string, maxTweetsNbr int) <-chan *TweetResultTimeline {
 	return getTweetTimeline(ctx, user, maxTweetsNbr, s.FetchTweets)
 }
 
 // GetTweetsAndReplies returns channel with tweets and replies for a given user.
-func (s *Scraper) GetTweetsAndReplies(ctx context.Context, user string, maxTweetsNbr int) <-chan *TweetResult {
+func (s *Scraper) GetTweetsAndReplies(ctx context.Context, user string, maxTweetsNbr int) <-chan *TweetResultTimeline {
 	return getTweetTimeline(ctx, user, maxTweetsNbr, s.FetchTweetsAndReplies)
 }
 
@@ -407,7 +407,7 @@ func (timeline *homeTimeline) parseTweets() ([]*Tweet, string) {
 }
 
 // GetHomeTweets returns channel with tweets from home timeline
-func (s *Scraper) GetHomeTweets(ctx context.Context, maxTweetsNbr int) <-chan *TweetResult {
+func (s *Scraper) GetHomeTweets(ctx context.Context, maxTweetsNbr int) <-chan *TweetResultTimeline {
 	return getTweetTimeline(ctx, "", maxTweetsNbr, s.fetchHomeTweets)
 }
 
@@ -482,7 +482,7 @@ func (s *Scraper) fetchHomeTweets(_ string, maxTweetsNbr int, cursor string) ([]
 }
 
 // GetForYouTweets returns channel with tweets from for you timeline
-func (s *Scraper) GetForYouTweets(ctx context.Context, maxTweetsNbr int) <-chan *TweetResult {
+func (s *Scraper) GetForYouTweets(ctx context.Context, maxTweetsNbr int) <-chan *TweetResultTimeline {
 	return getTweetTimeline(ctx, "", maxTweetsNbr, s.fetchForYouTweets)
 }
 
