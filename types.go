@@ -73,8 +73,8 @@ type (
 		UserID            string
 		Username          string
 		Videos            []Video
-		Views             int
-		SensitiveContent  bool
+		//Views             int
+		SensitiveContent bool
 	}
 
 	// ProfileResult of scrapping.
