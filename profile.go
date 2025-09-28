@@ -46,6 +46,56 @@ type Profile struct {
 	CanHighlightTweets   bool
 }
 
+type ProfileSpotlight struct {
+	CommunityResults SpotlightCommunityResults `json:"community_results"`
+}
+
+type SpotlightCommunityResults struct {
+	Result SpotlightCommunity `json:"result"`
+}
+
+type SpotlightCommunity struct {
+	Typename               string                  `json:"__typename"`
+	MembersFacepileResults []SpotlightMemberResult `json:"members_facepile_results"`
+	MemberCount            int                     `json:"member_count"`
+	DefaultBannerMedia     *MediaWrapper           `json:"default_banner_media"`
+	CustomBannerMedia      *MediaWrapper           `json:"custom_banner_media"`
+	Description            string                  `json:"description"`
+	Name                   string                  `json:"name"`
+	RestID                 string                  `json:"rest_id"`
+	ID                     string                  `json:"id"`
+}
+
+type SpotlightMemberResult struct {
+	Result SpotlightMemberUser `json:"result"`
+	ID     string              `json:"id"`
+}
+
+type SpotlightMemberUser struct {
+	Typename string     `json:"__typename"`
+	Avatar   UserAvatar `json:"avatar"`
+	ID       string     `json:"id"`
+}
+
+type profileSpotlightsResponse struct {
+	Data struct {
+		UserResultByScreenName struct {
+			Result struct {
+				Typename       string `json:"__typename"`
+				ProfileModules struct {
+					V1 []struct {
+						ProfileModule struct {
+							Typename        string           `json:"__typename"`
+							IsProfileModule string           `json:"__isProfileModule"`
+							Config          ProfileSpotlight `json:"config"`
+						} `json:"profile_module"`
+					} `json:"v1"`
+				} `json:"profilemodules"`
+			} `json:"result"`
+		} `json:"user_result_by_screen_name"`
+	} `json:"data"`
+}
+
 type user struct {
 	Data struct {
 		User struct {
@@ -198,4 +248,40 @@ func (s *Scraper) GetUserIDByScreenName(screenName string) (string, error) {
 	cacheIDs.Store(screenName, profile.UserID)
 
 	return profile.UserID, nil
+}
+
+// ProfileSpotlights retrieves profile spotlight information for a user by screen name
+func (s *Scraper) ProfileSpotlights(screenName string) (*ProfileSpotlight, error) {
+	var jsn profileSpotlightsResponse
+	req, err := http.NewRequest("GET", "https://x.com/i/api/graphql/1sAf0uU4-B2ZLJGUX5O7LQ/ProfileSpotlightsQuery", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	variables := map[string]interface{}{
+		"screen_name": screenName,
+	}
+
+	query := url.Values{}
+	query.Set("variables", mapToJSONString(variables))
+	req.URL.RawQuery = query.Encode()
+
+	err = s.RequestAPI(req, &jsn)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if profile modules exist and contain communities module
+	if len(jsn.Data.UserResultByScreenName.Result.ProfileModules.V1) == 0 {
+		return nil, fmt.Errorf("no profile modules found for user %s", screenName)
+	}
+
+	// Find the communities module
+	for _, module := range jsn.Data.UserResultByScreenName.Result.ProfileModules.V1 {
+		if module.ProfileModule.Typename == "CommunitiesModule" {
+			return &module.ProfileModule.Config, nil
+		}
+	}
+
+	return nil, fmt.Errorf("no communities spotlight found for user %s", screenName)
 }
