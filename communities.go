@@ -3,6 +3,7 @@ package twitterscraper
 import (
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // GetCommunity retrieves community information by ID
@@ -140,4 +141,61 @@ func (s *Scraper) newRequestExtended(method string, url string) (*http.Request, 
 	req.URL.RawQuery = q.Encode()
 
 	return req, nil
+}
+
+// MembersByCommunityId retrieves community members with pagination support
+func (s *Scraper) MembersByCommunityId(communityId string, maxResults int, cursor *string) ([]*CommunityMember, *string, error) {
+	req, _ := s.newRequest("GET", "https://x.com/i/api/graphql/gwNDrhzDr9kuoulEqgSQcQ/membersSliceTimeline_Query")
+
+	variables := map[string]interface{}{
+		"communityId": communityId,
+		"cursor":      cursor,
+	}
+
+	features := map[string]interface{}{
+		"responsive_web_graphql_timeline_navigation_enabled": true,
+	}
+
+	query := url.Values{}
+	query.Set("variables", mapToJSONString(variables))
+	query.Set("features", mapToJSONString(features))
+	req.URL.RawQuery = query.Encode()
+
+	var members []*CommunityMember
+	var nextCursor *string
+	fetched := 0
+
+	for fetched < maxResults {
+		var response CommunityMembersResponse
+		err := s.RequestAPI(req, &response)
+		if err != nil {
+			return members, nextCursor, err
+		}
+
+		// Extract members from response
+		communityMembers := response.Data.CommunityResults.Result.MembersSlice.ItemsResults
+		for _, memberResult := range communityMembers {
+			if fetched >= maxResults {
+				break
+			}
+			members = append(members, &memberResult.Result)
+			fetched++
+		}
+
+		// Get next cursor
+		nextCursor = response.Data.CommunityResults.Result.MembersSlice.SliceInfo.NextCursor
+
+		// Break if no more pages or reached maxResults
+		if nextCursor == nil || *nextCursor == "" || fetched >= maxResults {
+			break
+		}
+
+		// Update cursor for next request
+		variables["cursor"] = *nextCursor
+		query.Set("variables", mapToJSONString(variables))
+		req.URL.RawQuery = query.Encode()
+		time.Sleep(500 * time.Millisecond)
+	}
+
+	return members, nextCursor, nil
 }

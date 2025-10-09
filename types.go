@@ -564,7 +564,9 @@ type (
 	}
 
 	RelationshipPerspectives struct {
-		Following bool `json:"following"`
+		Blocking   bool `json:"blocking"`
+		FollowedBy bool `json:"followed_by"`
+		Following  bool `json:"following"`
 	}
 
 	EditControl struct {
@@ -661,6 +663,60 @@ type (
 		CommunityResults CommunityResults `json:"community_results"`
 		Role             string           `json:"role"`
 		UserResults      UserResults      `json:"user_results"`
+	}
+
+	// Community Members API response types
+	CommunityMembersResponse struct {
+		Data struct {
+			CommunityResults struct {
+				Result CommunityWithMembers `json:"result"`
+				ID     string               `json:"id"`
+			} `json:"communityResults"`
+		} `json:"data"`
+	}
+
+	CommunityWithMembers struct {
+		Typename     string                `json:"__typename"`
+		MembersSlice CommunityMembersSlice `json:"members_slice"`
+		ID           string                `json:"id"`
+	}
+
+	CommunityMembersSlice struct {
+		ItemsResults []CommunityMemberResult `json:"items_results"`
+		SliceInfo    SliceInfo               `json:"slice_info"`
+	}
+
+	CommunityMemberResult struct {
+		Result CommunityMember `json:"result"`
+		ID     string          `json:"id"`
+	}
+
+	CommunityMember struct {
+		Typename                              string                   `json:"__typename"`
+		ID                                    string                   `json:"id"`
+		CommunityRole                         string                   `json:"community_role"`
+		Core                                  TweetUserCore            `json:"core"`
+		Legacy                                CommunityMemberLegacy    `json:"legacy"`
+		RestID                                string                   `json:"rest_id"`
+		Privacy                               UserPrivacy              `json:"privacy"`
+		RelationshipPerspectives              RelationshipPerspectives `json:"relationship_perspectives"`
+		SuperFollowing                        bool                     `json:"super_following"`
+		SuperFollowEligible                   bool                     `json:"super_follow_eligible"`
+		SuperFollowedBy                       bool                     `json:"super_followed_by"`
+		AffiliatesHighlightedLabel            interface{}              `json:"affiliates_highlighted_label"`
+		IsBlueVerified                        bool                     `json:"is_blue_verified"`
+		Avatar                                UserAvatar               `json:"avatar"`
+		IdentityProfileLabelsHighlightedLabel interface{}              `json:"identity_profile_labels_highlighted_label"`
+		Verification                          Verification             `json:"verification"`
+	}
+
+	CommunityMemberLegacy struct {
+		IDStr             string `json:"id_str"`
+		FollowRequestSent bool   `json:"follow_request_sent"`
+	}
+
+	SliceInfo struct {
+		NextCursor *string `json:"next_cursor"`
 	}
 
 	QuotedStatusResult struct {

@@ -5,6 +5,7 @@
 10.09.2025
 
 - Added community functionality: `GetCommunity` and `GetCommunityTimeline` methods
+- Added `MembersByCommunityId` method for retrieving community members with cursor pagination support
 - Integrated communities extension into main library namespace for easier access
 - Added comprehensive community-related types and models
 
